@@ -1,5 +1,5 @@
 '''
-<one line to give the program's name and a brief idea of what it does.>
+pyDactor - Jack McKenna (Hulto)
 Copyright (C) <year>  <name of author>
 
 This program is free software: you can redistribute it and/or modify
