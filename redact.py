@@ -24,14 +24,14 @@ import sys
 from xml.dom import minidom
 import os
 
-
+#Displays proper usage
 def usage():
-    print "Usage python redact.py </path/to/files>\n\
-      -a automatic\n\
+    print "Usage python redact.py -f '.' -w 'path/to/wordlist.txt'\
       -h help\n\
       -w wordlist file\n\
-      -d delimiter"
+      -f path to image file(s) [should be '.']"
 
+#Main execution
 pth = ""
 wordlist = ""
 
@@ -59,67 +59,84 @@ if len(pth) < 1 or len(wordlist) < 1:
 #wordlist = raw_input("Please enter path of word list\n")
 
 
-
+#Main funciton takes in path to files and wordlist
 def main(path, wordlist):
+  #cleansup workspacs
   cleanup(path)
+  #Iterates through all files in directory
   filelist = [f for f in os.listdir(path)]
   for f in filelist:
+    #Checks for png and jpg files
     if f.endswith('.png') or f.endswith('.jpg'):
       print f
+      #runs tesseract ocr on them with hocr flag
+      # $ tesseract <image> <imagename> hocr
       tess(f)
+      #Launches redaction
       rundact(f, wordlist)
+  #Clean up .hocr files afterwards
   cleanup(path)
 
   
 def cleanup(path):
+  #Iterate through directory
   filelist = [f for f in os.listdir(path) if f.endswith('.hocr') ]
   for f in filelist:
+    #Remove all files with .hocr file ending
     os.remove(f)
 
+#Execute tesseract binary: https://github.com/tesseract-ocr/
 def tess(filename):
   os.system('tesseract ' + filename + ' ' + filename.split('.')[len(filename.split('.'))-2] + ' hocr')
 
-#Interpret user input
-#defGetInput
-
-testFileNames = ['test.hocr']
-
+#Runs redaction
 def rundact(filenames, wordlist):
-  #execute tesseract  
+  #Get words from word list 
   fo = open(wordlist)
   linesArr = fo.read().split('\n')
+  #Generate <image name>.hocr file path
   x = filenames
   newX = x.split('.')[len(x.split('.'))-2] + '.hocr'
   resArr = []
+  #Parse hocr XML for bounding boxes
   XMLArr = parseXML(newX)
+  #Iterate through wordlist checking XML 
+  #document for instances of words t be redacted
   for y in linesArr[:-1]:
     for i in range(0, len(XMLArr)):
       if y in XMLArr[i][4]:
         print XMLArr[i][4]
         print 'found ' + y + ' in text'
+        #Store entries to be redacted in resArr
         resArr.append(XMLArr[i])
   print resArr
   ptArr = []
+  #Iterate through resArr storing only the points and not the text
   for a in resArr:
     print a[1]
+    #Create list of points to redact
     ptArr.append([int(a[0]), int(a[1]), int(a[2]), int(a[3])])
   redactImage(x, ptArr) 
 
-#files - list of .hocr files
+#file - .hocr file
 def parseXML(file):
   strArr = []
   i = 0
   xmldoc = minidom.parse(file)
+  #Get applicable elemnts
   span = xmldoc.getElementsByTagName("span")
   for a in span:
     if a.getAttribute('class') == 'ocrx_word':
       if a.firstChild.nodeValue != None:
+        #Store bounding box
         boxArr = a.getAttribute('title').split(' ')
+        #Store text value
         entry = boxArr[1] + ' ' + boxArr[2] + ' ' + boxArr[3] + ' ' + boxArr[4][:-1] + ' ' + a.firstChild.nodeValue
         #print entry
         strArr.append(entry.split(' '))
   return strArr
 
+#NOT USED
 #itterate through ptArray looking for strings in wordlist
 #ptArray - array of points and text
 #strings - wordlist of words to redact
@@ -130,18 +147,21 @@ def findStrings(filename, ptArray, strings):
   #Check for if string from strings is present
   #call redactWord
 
-pointArray = [[346,13,468,33],[10,13,329,39]]
-
+#Redact image given a set of points
 def redactImage(filename, arr):
   img = Image.open(filename)
+  #Iterate through points
   for x in arr:
+    #Redact each word
    redactWord(img, x[0], x[1], x[2], x[3], 0, 0)
+  #Display image
   img.show()
 
 #Redact word from filename give the boundingbox
 def redactWord(img, left, top, right, bottom, buffer, color):
   pix = img.load()
   i = 0
+  #Iterate through bounded area coloring out pixels
   for x in range(left-buffer, right+buffer):
     for y in range(top-buffer, bottom+buffer):
       pix[x,y] = color
