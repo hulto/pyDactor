@@ -87,6 +87,7 @@ def cleanup(path):
 
 #Execute tesseract binary: https://github.com/tesseract-ocr/
 def tess(filename):
+  filename = filename.replace(' ', '\ ');
   os.system('tesseract ' + filename + ' ' + filename.split('.')[len(filename.split('.'))-2] + ' hocr')
 
 #Runs redaction
