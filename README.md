@@ -8,21 +8,22 @@ pyDactor reads in the images one at a time; using the tesserocr library it reads
 Each line is then run through the regular expression provided and any matched characters are drawn over with black boxes using the PIL library.
 
 
+<b>Dependencies</b>
+<ul>
+<li>tesserocr - https://github.com/sirfz/tesserocr</li>
+<li>PIL - https://askubuntu.com/questions/156484/how-do-i-install-python-imaging-library-pil</li>
+</ul>
 
-INSTALL
-
-sudo apt-get install tesseract-ocr
-
+<b>Install</b>
+<br>
+<code>
 git clone https://github.com/hulto/pyDactor.git
-
-
-SETUP
-
-•Put the redaction script into the folder with images to redact
-
-•Create a wordlist file
-
-•Put each word you want to redact on its own line
+</code>
+<br>
+<code>
+cd pyDactor
+</code>
+<br>
 
 
 <b>Usage:</b>
