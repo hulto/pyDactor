@@ -7,6 +7,8 @@ You also provide a regular expression selecting the characters, or words that yo
 pyDactor reads in the images one at a time; using the tesserocr library it reads the text in the images and gets their location in the image.
 Each line is then run through the regular expression provided and any matched characters are drawn over with black boxes using the PIL library.
 
+<br>
+If installing tesserocr doesn't work out. There is an ELF32 binary version available for download as well.
 
 <b>Dependencies</b>
 <ul>
