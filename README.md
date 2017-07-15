@@ -9,7 +9,7 @@ Each line is then run through the regular expression provided and any matched ch
 
 <br>
 If installing tesserocr doesn't work out. There is an ELF32 binary version available for download as well.
-
+<br>
 <b>Dependencies</b>
 <ul>
 <li>tesserocr - https://github.com/sirfz/tesserocr</li>
