@@ -46,3 +46,5 @@ python main.py -f '/path/to/image(s)' -e 'regular.expression' [-q]
 <code>
 -q    quite mode won't open image after processing, instead will save to disk.
 </code>
+
+<i>there are known issues with image scaling. Some experimentation may be required</i>
